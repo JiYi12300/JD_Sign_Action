@@ -1,38 +1,34 @@
-name: JD_Try
-
+name: 书旗小说1
 on:
-  # repository_dispatch:
   workflow_dispatch:
-  release:
-    types: published
-  # push:
-  #   branches:
-  #     - master
-  schedule:
-    - cron: 0 1 * * * 
   watch:
     types: started
-    
+  schedule:
+    - cron: '10 0,9 * * *'
 env:
   JD_COOKIE: ${{ secrets.JD_COOKIE }}
-  PUSH_KEY: ${{ secrets.PUSH_KEY }}
-  UPLOAD_BESULT_DIR: true
-
+  
 jobs:
-    build:
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Checkout codes
-              uses: actions/checkout@v2
-              
-            - name: Use Node.js
-              uses: actions/setup-node@v1
-              with:
-                node-version: '12.x'
-                
-            - name: Run install
-              run: npm install
-              
-            - name: Run Script
-              run: node jd_try.js
+  build:
+    runs-on: ubuntu-latest       
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: npm install
+        run: |
+          npm install
+          npm install cron
+          npm install request
+          curl ipinfo.io/json
+  
+      - name: '【京东试用】'
+        run: |  
+          node jd/jd_try.js
+        #env:
+         #SQ_COOKIES: ${{ secrets.SQ_COOKIES1 }}
